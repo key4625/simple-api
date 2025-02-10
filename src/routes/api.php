@@ -8,6 +8,7 @@ use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->load();
+$remoteUrl = $_ENV['REMOTE_URL'];
 
 $controller = new PostController($db);
 $authMiddleware = new AuthMiddleware();
@@ -36,6 +37,7 @@ if ($uriSegments[0] === 'simple-api' && isset($uriSegments[1])) {
                 if (isset($_FILES['image'])) {
                     $targetDir = __DIR__ . '/uploads/';
                     $targetFile = $targetDir . basename($_FILES['image']['name']);
+                    $remoteName = $remoteUrl . "/uploads/" . basename($_FILES['image']['name']);
                     $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
                     // Controlla il tipo di file
@@ -59,7 +61,7 @@ if ($uriSegments[0] === 'simple-api' && isset($uriSegments[1])) {
                         exit;
                     }
 
-                    $data['image'] = $targetFile;
+                    $data['image'] = $remoteName;
                 }
 
                 // Sanitizza e valida i dati
@@ -73,10 +75,20 @@ if ($uriSegments[0] === 'simple-api' && isset($uriSegments[1])) {
                     $data = $_POST;
                 }
 
-                // Gestisci l'upload dell'immagine
+                // Recupera il percorso dell'immagine esistente dal database
+                $existingPost = $controller->getPost($uriSegments[2]);
+                if ($existingPost && isset($existingPost['image'])) {
+                    $existingImagePath = __DIR__ . '/uploads/' . basename($existingPost['image']);
+                    if (file_exists($existingImagePath)) {
+                        unlink($existingImagePath);
+                    }
+                }
+
+                // Gestisci l'upload della nuova immagine
                 if (isset($_FILES['image'])) {
                     $targetDir = __DIR__ . '/uploads/';
                     $targetFile = $targetDir . basename($_FILES['image']['name']);
+                    $remoteName = $remoteUrl . "/uploads/" . basename($_FILES['image']['name']);
                     $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
                     // Controlla il tipo di file
@@ -100,7 +112,7 @@ if ($uriSegments[0] === 'simple-api' && isset($uriSegments[1])) {
                         exit;
                     }
 
-                    $data['image'] = $targetFile;
+                    $data['image'] = $remoteName;
                 }
 
                 // Sanitizza e valida i dati
