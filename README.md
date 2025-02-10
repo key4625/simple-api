@@ -37,11 +37,11 @@ Accedi all'API tramite il browser o strumenti come Postman.
 
 ## Endpoint API
 
-GET /simple-api/posts - Recupera tutti i post.
-GET /simple-api/posts/{id} - Recupera un post specifico.
-POST /simple-api/posts - Crea un nuovo post.
-PUT /simple-api/posts/{id} - Aggiorna un post esistente.
-DELETE /simple-api/posts/{id} - Elimina un post.
+- GET /simple-api/posts - Recupera tutti i post.
+- GET /simple-api/posts/{id} - Recupera un post specifico.
+- POST /simple-api/posts - Crea un nuovo post.
+- PUT /simple-api/posts/{id} - Aggiorna un post esistente.
+- DELETE /simple-api/posts/{id} - Elimina un post.
 
 Per modificare gli endpoint e aggiungere nuove funzionalità, modifica il file src/routes/api.php.
 
