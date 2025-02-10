@@ -1,0 +1,25 @@
+# Ignora i file e le cartelle generate da Composer
+/vendor/
+/composer.lock
+
+# Ignora i file di configurazione dell'IDE
+/.idea/
+/.vscode/
+
+# Ignora i file di log
+*.log
+
+# Ignora i file di cache
+/cache/
+/tmp/
+
+# Ignora i file di database SQLite
+/src/database.sqlite
+
+# Ignora i file di configurazione di PHPUnit
+/phpunit.xml
+/phpunit.xml.dist
+
+# Ignora i file di configurazione di sistema
+.DS_Store
+Thumbs.db
