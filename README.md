@@ -86,3 +86,8 @@ curl -X DELETE http://localhost:8000/simple-api/posts/1 \
 ```
 
 
+## Sicurezza
+Gli endpoint di creazione, modifica e cancellazione richiedono un token di autorizzazione. Modifica il file .env per aggiungere il tuo token segreto. Assicurati di mantenere il token segreto e non condividerlo con nessuno.
+Questo è un livello di sicurezza di base. Per un'applicazione più complessa, considera l'utilizzo di un sistema di autenticazione più avanzato come OAuth o JWT.
+L'inserimento di files è limitato a immagini di tipo jpg, jpeg, png e gif con dimensioni massime di 5MB.
+Tutti gli endpoint sono protetti da attacchi sql injection grazie all'utilizzo di prepared statements.
