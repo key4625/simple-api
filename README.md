@@ -26,6 +26,11 @@ Questa è una semplice applicazione API PHP che utilizza SQLite per la gestione 
    ```
    php src/config/seed.php
    ```
+5. Nella root del progetto rinomina il file env.example in .env  e aggiungi il token segreto:
+   ```
+   SECRET_TOKEN=your_secret_token
+   ```
+
 
 ## Utilizzo
 Avvia il server locale:
@@ -57,15 +62,26 @@ curl -X GET http://localhost:8000/simple-api/posts/1
 ```
 Crea un nuovo post
 ```
-curl -X POST http://localhost:8000/simple-api/posts -d "title=Titolo del post&content=Contenuto del post"
+curl -X POST http://localhost:8000/simple-api/posts \
+  -H "Authorization: Bearer your_secret_token" \
+  -F "title=Nuovo Post" \
+  -F "content=Contenuto del nuovo post" \
+  -F "image=@/path/to/your/image.jpg" \
+  -F "category=Categoria 1"
 ```
 Aggiorna un post esistente
 ```
-curl -X PUT http://localhost:8000/simple-api/posts/1 -d "title=Nuovo titolo del post&content=Nuovo contenuto del post"
+curl -X PUT http://localhost:8000/simple-api/posts/1 \
+  -H "Authorization: Bearer your_secret_token" \
+  -F "title=Post Aggiornato" \
+  -F "content=Contenuto aggiornato" \
+  -F "image=@/path/to/your/image.jpg" \
+  -F "category=Categoria 2"
 ```
 Elimina un post
 ```
-curl -X DELETE http://localhost:8000/simple-api/posts/1
+curl -X DELETE http://localhost:8000/simple-api/posts/1 \
+  -H "Authorization: Bearer your_secret_token"
 ``
 ```
 

@@ -23,7 +23,7 @@ class Post {
     public function find($id) {
         $query = "SELECT * FROM " . $this->table_name . " WHERE id = :id";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt;
     }
@@ -31,28 +31,28 @@ class Post {
     public function create() {
         $query = "INSERT INTO " . $this->table_name . " (title, content, image, category) VALUES (:title, :content, :image, :category)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':title', $this->title);
-        $stmt->bindParam(':content', $this->content);
-        $stmt->bindParam(':image', $this->image);
-        $stmt->bindParam(':category', $this->category);
+        $stmt->bindParam(':title', htmlspecialchars($this->title));
+        $stmt->bindParam(':content', htmlspecialchars($this->content));
+        $stmt->bindParam(':image', htmlspecialchars($this->image));
+        $stmt->bindParam(':category', htmlspecialchars($this->category));
         return $stmt->execute();
     }
 
     public function update() {
         $query = "UPDATE " . $this->table_name . " SET title = :title, content = :content, image = :image, category = :category WHERE id = :id";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $this->id);
-        $stmt->bindParam(':title', $this->title);
-        $stmt->bindParam(':content', $this->content);
-        $stmt->bindParam(':image', $this->image);
-        $stmt->bindParam(':category', $this->category);
+        $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $stmt->bindParam(':title', htmlspecialchars($this->title));
+        $stmt->bindParam(':content', htmlspecialchars($this->content));
+        $stmt->bindParam(':image', htmlspecialchars($this->image));
+        $stmt->bindParam(':category', htmlspecialchars($this->category));
         return $stmt->execute();
     }
 
     public function delete($id) {
         $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         return $stmt->execute();
     }
 }

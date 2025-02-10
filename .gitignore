@@ -16,6 +16,8 @@
 # Ignora i file di database SQLite
 /src/database.sqlite
 
+# Ignora il file .env 
+/.env
 # Ignora i file di configurazione di PHPUnit
 /phpunit.xml
 /phpunit.xml.dist
