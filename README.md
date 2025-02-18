@@ -50,6 +50,16 @@ Accedi all'API tramite il browser o strumenti come Postman.
 
 Per modificare gli endpoint e aggiungere nuove funzionalità, modifica il file src/routes/api.php.
 
+# Registrazione
+curl -X POST http://localhost:8000/simple-api/register \
+  -H "Content-Type: application/json" \
+  -d '{"email": "test@email.com", "password": "test"}'
+
+# Login
+curl -X POST http://localhost:8000/simple-api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "test@email.com", "password": "test"}'
+
 ## Esempi di richieste cURL
 Recupera tutti i post
 
@@ -63,7 +73,7 @@ curl -X GET http://localhost:8000/simple-api/posts/1
 Crea un nuovo post
 ```
 curl -X POST http://localhost:8000/simple-api/posts \
-  -H "Authorization: Bearer your_secret_token" \
+  -H "Authorization: Bearer your_jwt_token" \
   -F "title=Nuovo Post" \
   -F "content=Contenuto del nuovo post" \
   -F "image=@/path/to/your/image.jpg" \

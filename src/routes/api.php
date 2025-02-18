@@ -2,6 +2,7 @@
 require __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../controllers/PostController.php';
+require_once __DIR__ . '/../controllers/AuthController.php';
 require_once __DIR__ . '/../middleware/AuthMiddleware.php';
 
 use Dotenv\Dotenv;
@@ -10,7 +11,8 @@ $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->load();
 $remoteUrl = $_ENV['REMOTE_URL'];
 
-$controller = new PostController($db);
+$postController = new PostController($db);
+$authController = new AuthController($db);
 $authMiddleware = new AuthMiddleware();
 
 $requestMethod = $_SERVER['REQUEST_METHOD'];
@@ -23,10 +25,11 @@ if ($uriSegments[0] === 'simple-api' && isset($uriSegments[1])) {
     switch ($uriSegments[1]) {
         case 'posts':
             if ($requestMethod === 'GET' && !isset($uriSegments[2])) {
-                $controller->getPosts();
+                $postController->getPosts();
             } elseif ($requestMethod === 'GET' && isset($uriSegments[2])) {
-                $controller->getPost($uriSegments[2]);
+                $postController->getPost($uriSegments[2]);
             } elseif ($requestMethod === 'POST') {
+                //Creazione di un articolo
                 $authMiddleware->__invoke($_SERVER, $_SERVER, function() {});
                 $data = json_decode(file_get_contents('php://input'), true);
                 if (json_last_error() !== JSON_ERROR_NONE) {
@@ -67,8 +70,9 @@ if ($uriSegments[0] === 'simple-api' && isset($uriSegments[1])) {
                 // Sanitizza e valida i dati
                 $data = array_map('htmlspecialchars', $data);
 
-                $controller->createPost($data);
+                $postController->createPost($data);
             } elseif ($requestMethod === 'PUT' && isset($uriSegments[2])) {
+                //Modifica articolo
                 $authMiddleware->__invoke($_SERVER, $_SERVER, function() {});
                 $data = json_decode(file_get_contents('php://input'), true);
                 if (json_last_error() !== JSON_ERROR_NONE) {
@@ -76,7 +80,7 @@ if ($uriSegments[0] === 'simple-api' && isset($uriSegments[1])) {
                 }
 
                 // Recupera il percorso dell'immagine esistente dal database
-                $existingPost = $controller->getPost($uriSegments[2]);
+                $existingPost = $postController->getPost($uriSegments[2]);
                 if ($existingPost && isset($existingPost['image'])) {
                     $existingImagePath = __DIR__ . '/uploads/' . basename($existingPost['image']);
                     if (file_exists($existingImagePath)) {
@@ -118,10 +122,34 @@ if ($uriSegments[0] === 'simple-api' && isset($uriSegments[1])) {
                 // Sanitizza e valida i dati
                 $data = array_map('htmlspecialchars', $data);
 
-                $controller->updatePost($uriSegments[2], $data);
+                $postController->updatePost($uriSegments[2], $data);
             } elseif ($requestMethod === 'DELETE' && isset($uriSegments[2])) {
                 $authMiddleware->__invoke($_SERVER, $_SERVER, function() {});
-                $controller->deletePost($uriSegments[2]);
+                $postController->deletePost($uriSegments[2]);
+            } else {
+                http_response_code(405);
+                echo json_encode(['message' => 'Method Not Allowed']);
+            }
+            break;
+        /*case 'register':
+            if ($requestMethod === 'POST') {
+                $data = json_decode(file_get_contents('php://input'), true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    $data = $_POST;
+                }
+                $authController->register($data);
+            } else {
+                http_response_code(405);
+                echo json_encode(['message' => 'Method Not Allowed']);
+            }
+            break;*/
+        case 'login':
+            if ($requestMethod === 'POST') {
+                $data = json_decode(file_get_contents('php://input'), true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    $data = $_POST;
+                }
+                $authController->login($data);
             } else {
                 http_response_code(405);
                 echo json_encode(['message' => 'Method Not Allowed']);

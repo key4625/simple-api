@@ -124,9 +124,25 @@ $posts = [
     ]
 ];
 
+$users = [
+    [
+        'email' => 'test@email.com',
+        'username' => 'test',
+        'password' => password_hash('test', PASSWORD_BCRYPT),
+        'privacy_accepted' => 1
+    ],
+    [
+        'email' => 'admin@email.com',
+        'username' => 'admin',
+        'password' => password_hash('admin', PASSWORD_BCRYPT),
+        'privacy_accepted' => 1
+    ]
+];
+
 try {
     $db->beginTransaction();
 
+    // Inserisci i post
     $stmt = $db->prepare("INSERT INTO posts (title, content, image, category) VALUES (:title, :content, :image, :category)");
 
     foreach ($posts as $post) {
@@ -137,8 +153,18 @@ try {
         $stmt->execute();
     }
 
+    // Inserisci gli utenti
+    $stmt = $db->prepare("INSERT INTO users (email, password, privacy_accepted) VALUES (:email, :password, :privacy_accepted)");
+
+    foreach ($users as $user) {
+        $stmt->bindParam(':email', $user['email']);
+        $stmt->bindParam(':password', $user['password']);
+        $stmt->bindParam(':privacy_accepted', $user['privacy_accepted']);
+        $stmt->execute();
+    }
+
     $db->commit();
-    echo "20 notizie inserite con successo.";
+    echo "20 notizie e 1 utente inseriti con successo.";
 } catch (PDOException $e) {
     $db->rollBack();
     echo "Error: " . $e->getMessage();

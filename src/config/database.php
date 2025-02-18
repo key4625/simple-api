@@ -14,7 +14,16 @@ if (!file_exists($databaseFile)) {
             category TEXT
         )");
 
-        echo "Database and table created successfully.";
+        $db->exec("CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY,
+            email TEXT UNIQUE,
+            username TEXT,
+            password TEXT,
+            privacy_accepted INTEGER,
+            user_type TEXT
+        )");
+
+        echo "Database and tables created successfully.";
     } catch (PDOException $e) {
         echo "Error: " . $e->getMessage();
     }

@@ -21,21 +21,31 @@ class PostController {
     }
 
     public function createPost($data) {
+        $title = htmlspecialchars($data['title']);
+        $content = htmlspecialchars($data['content']);
+        $image = htmlspecialchars($data['image']);
+        $category = htmlspecialchars($data['category']);
+        
         $stmt = $this->db->prepare("INSERT INTO posts (title, content, image, category) VALUES (:title, :content, :image, :category)");
-        $stmt->bindParam(':title', htmlspecialchars($data['title']));
-        $stmt->bindParam(':content', htmlspecialchars($data['content']));
-        $stmt->bindParam(':image', htmlspecialchars($data['image']));
-        $stmt->bindParam(':category', htmlspecialchars($data['category']));
+        $stmt->bindParam(':title', $title);
+        $stmt->bindParam(':content', $content);
+        $stmt->bindParam(':image', $image);
+        $stmt->bindParam(':category', $category);
         $stmt->execute();
         echo json_encode(['id' => $this->db->lastInsertId()]);
     }
 
     public function updatePost($id, $data) {
+        $title = htmlspecialchars($data['title']);
+        $content = htmlspecialchars($data['content']);
+        $image = htmlspecialchars($data['image']);
+        $category = htmlspecialchars($data['category']);
+        
         $stmt = $this->db->prepare("UPDATE posts SET title = :title, content = :content, image = :image, category = :category WHERE id = :id");
-        $stmt->bindParam(':title', htmlspecialchars($data['title']));
-        $stmt->bindParam(':content', htmlspecialchars($data['content']));
-        $stmt->bindParam(':image', htmlspecialchars($data['image']));
-        $stmt->bindParam(':category', htmlspecialchars($data['category']));
+        $stmt->bindParam(':title', $title);
+        $stmt->bindParam(':content', $content);
+        $stmt->bindParam(':image', $image);
+        $stmt->bindParam(':category', $category);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         echo json_encode(['message' => 'Post aggiornato con successo']);
