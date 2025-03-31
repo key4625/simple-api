@@ -1,5 +1,11 @@
 RewriteEngine On
-RewriteBase /simple-api/
+
+# Rimuove il prefisso del percorso base dinamicamente
+# RewriteBase /
+
+# Reindirizza tutte le richieste che non corrispondono a file o directory esistenti
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ src/routes/api.php [QSA,L]
+
+# Reindirizza tutte le richieste a src/routes/api.php
+RewriteRule ^(.*)$ src/routes/api.php [QSA,L]
