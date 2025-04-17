@@ -26,6 +26,12 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 header("Access-Control-Allow-Credentials: true");
 
+// Gestione delle richieste OPTIONS (preflight)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
 if (isset($uriSegments[0]) && $uriSegments[0] === 'posts') {
     switch ($uriSegments[1] ?? '') {
         case '':
