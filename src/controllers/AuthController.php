@@ -4,6 +4,7 @@ require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 class AuthController {
     private $userModel;
@@ -50,6 +51,21 @@ class AuthController {
         } else {
             http_response_code(401);
             echo json_encode(['message' => 'Invalid email or password']);
+        }
+    }
+
+    public function verifyToken($token) {
+        try {
+            $decoded = JWT::decode($token, new Key($this->secretKey, 'HS256'));
+            return [
+                'valid' => true,
+                'data' => $decoded
+            ];
+        } catch (Exception $e) {
+            return [
+                'valid' => false,
+                'message' => $e->getMessage()
+            ];
         }
     }
 }

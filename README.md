@@ -47,9 +47,9 @@ Accedi all'API tramite il browser o strumenti come Postman.
 - POST /posts - Crea un nuovo post.
 - PUT /posts/{id} - Aggiorna un post esistente.
 - DELETE /posts/{id} - Elimina un post.
-- POST /register - Registra un nuovo utente (richiede `username`, `email`, `password`, `user_type` e `privacy_accepted`).  
-  **Nota:** La logica di registrazione non è ancora implementata.
+- POST /register - Registra un nuovo utente (richiede `username`, `email`, `password`, `user_type` e `privacy_accepted`).
 - POST /login - Effettua il login e ottieni un token di autorizzazione.
+- POST /verify-token - Verifica la validità di un token JWT.
 
 Per modificare gli endpoint e aggiungere nuove funzionalità, modifica il file src/routes/api.php.
 
@@ -111,6 +111,13 @@ curl -X POST http://localhost:8000/login \
   -d '{"email": "test@email.com", "password": "test"}'
 ```
 
+Verifica un token JWT:
+```
+curl -X POST http://localhost:8000/verify-token \
+  -H "Content-Type: application/json" \
+  -d '{"token": "your_jwt_token"}'
+```
+
 ## Esempi di utilizzo con JavaScript (Fetch API)
 
 Recupera tutti i post:
@@ -160,6 +167,24 @@ fetch('http://localhost:8000/posts', {
 })
   .then(response => response.json())
   .then(data => console.log(data))
+  .catch(error => console.error('Errore:', error));
+```
+
+Verifica un token:
+```javascript
+fetch('http://localhost:8000/verify-token', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ token: 'your_jwt_token' })
+})
+  .then(response => response.json())
+  .then(data => {
+    if (data.valid) {
+      console.log('Token valido:', data.data);
+    } else {
+      console.error('Token non valido:', data.message);
+    }
+  })
   .catch(error => console.error('Errore:', error));
 ```
 

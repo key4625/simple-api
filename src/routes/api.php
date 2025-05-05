@@ -80,6 +80,39 @@ if (isset($uriSegments[0]) && $uriSegments[0] === 'posts') {
         http_response_code(405);
         echo json_encode(['message' => 'Method Not Allowed']);
     }
+} elseif (isset($uriSegments[0]) && $uriSegments[0] === 'register') {
+    if ($requestMethod === 'POST') {
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $data = $_POST;
+        }
+        $authController->register($data);
+    } else {
+        http_response_code(405);
+        echo json_encode(['message' => 'Method Not Allowed']);
+    }
+} elseif (isset($uriSegments[0]) && $uriSegments[0] === 'verify-token') {
+    if ($requestMethod === 'POST') {
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $data = $_POST;
+        }
+        if (isset($data['token'])) {
+            $result = $authController->verifyToken($data['token']);
+            if ($result['valid']) {
+                echo json_encode(['valid' => true, 'data' => $result['data']]);
+            } else {
+                http_response_code(401);
+                echo json_encode(['valid' => false, 'message' => $result['message']]);
+            }
+        } else {
+            http_response_code(400);
+            echo json_encode(['message' => 'Token is required']);
+        }
+    } else {
+        http_response_code(405);
+        echo json_encode(['message' => 'Method Not Allowed']);
+    }
 } else {
     http_response_code(404);
     echo json_encode(['message' => 'Not Found']);
