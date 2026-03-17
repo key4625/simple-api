@@ -12,7 +12,7 @@ class PostController {
     }
 
     public function getPosts() {
-        $posts = $this->db->query("SELECT * FROM posts")->fetchAll(PDO::FETCH_ASSOC);
+        $posts = $this->db->query("SELECT * FROM posts ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($posts);
     }
 
