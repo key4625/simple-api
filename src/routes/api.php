@@ -23,6 +23,14 @@ $authController = new AuthController($db);
 $authMiddleware = new AuthMiddleware();
 
 $requestMethod = $_SERVER['REQUEST_METHOD'];
+// Method override: i browser e alcuni client non supportano PUT con multipart/form-data.
+// Invia POST con campo "_method=PUT" oppure header "X-HTTP-Method-Override: PUT".
+if ($requestMethod === 'POST') {
+    $override = $_POST['_method'] ?? $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'] ?? null;
+    if ($override && in_array(strtoupper($override), ['PUT', 'DELETE'], true)) {
+        $requestMethod = strtoupper($override);
+    }
+}
 $requestUri = str_replace(parse_url($remoteUrl, PHP_URL_PATH), '', $_SERVER['REQUEST_URI']); // Rimuove il prefisso del percorso base
 $requestUri = parse_url($requestUri, PHP_URL_PATH);
 $uriSegments = explode('/', trim($requestUri, '/'));
