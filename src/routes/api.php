@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
 require __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../controllers/PostController.php';
@@ -11,7 +13,12 @@ $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->load();
 $remoteUrl = rtrim($_ENV['REMOTE_URL'], '/'); // Rimuove eventuali slash finali
 
-$postController = new PostController($db);
+$uploadsDir = __DIR__ . '/../../uploads';
+$uploadsUrl = $remoteUrl . '/uploads';
+if (!is_dir($uploadsDir)) {
+    mkdir($uploadsDir, 0755, true);
+}
+$postController = new PostController($db, $uploadsDir, $uploadsUrl);
 $authController = new AuthController($db);
 $authMiddleware = new AuthMiddleware();
 
